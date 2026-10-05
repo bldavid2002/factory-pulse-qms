@@ -1,0 +1,19 @@
+name: Render keep-alive
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    if: ${{ vars.RENDER_HEALTH_URL != '' }}
+    steps:
+      - name: Check backend health
+        env:
+          HEALTH_URL: ${{ vars.RENDER_HEALTH_URL }}
+        run: curl --fail --silent --show-error --retry 2 --retry-delay 5 "$HEALTH_URL"
