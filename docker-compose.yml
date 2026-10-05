@@ -1,0 +1,35 @@
+services:
+  backend:
+    build:
+      context: ./backend-python
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - CROSS_ORIGINS=http://localhost:5173
+    healthcheck:
+      test: ["CMD", "curl", "-f", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+  
+  frontend:
+    build:
+      context: ./frontend-TypeScript
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+  nginx:
+      image: nginx:alpine
+      ports:
+        - "80:80"
+      volumes:
+        - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      depends_on:
+        - frontend
+        - backend
