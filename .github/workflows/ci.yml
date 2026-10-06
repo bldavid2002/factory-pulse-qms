@@ -57,9 +57,17 @@ jobs:
         run: docker compose up -d --build
 
       - name: Test Nginx Reverse Proxy and Backend Health
-        run: curl --fail --retry 15 --retry-delay 2 --retry-connrefused http://localhost/api/health
-          
+        run: |
+          sleep 3 
+          curl --fail --retry 15 --retry-delay 2 --retry-all-errors http://localhost/api/health
+      
+      - name : Show Docker logs on failure
+        if: failure()
+        run: | 
+          docker compose ps -a
+          docker compose logs
+
       - name: Stop containers
         if: always()
-        run: docker-compose down
+        run: docker compose down
     
