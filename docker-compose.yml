@@ -33,3 +33,14 @@ services:
       depends_on:
         - frontend
         - backend
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    ports:
+      - "3001:3001"
+    volumes:
+      - kuma-data:/app/data
+    restart: unless-stopped
+  
+volumes:
+  kuma-data:
