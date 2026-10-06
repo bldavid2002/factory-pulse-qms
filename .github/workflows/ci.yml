@@ -57,17 +57,7 @@ jobs:
         run: docker compose up -d --build
 
       - name: Test Nginx Reverse Proxy and Backend Health
-        run: |
-          for  i in {1..15}: do
-            if curl -s -f http://localhost/api/health | grep -q "ok"; then
-              echo "Nginx and backend are up and running"
-              exit 0
-            fi
-            sleep 2
-          done
-          echo "Nginx or backend failed to start"
-          docker compose logs
-          exit 1
+        run: curl --fail --retry 15 --retry-delay 2 --retry-connrefused http://localhost/api/health
           
       - name: Stop containers
         if: always()
