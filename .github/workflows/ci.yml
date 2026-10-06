@@ -53,7 +53,7 @@ jobs:
           push: false
           tags: factorypulse-api:${{ github.sha }}
       
-      - name Start full stack with docker compose
+      - name: Start full stack with docker compose
         run: docker-compose up -d --build
 
       - name: Test Nginx Reverse Proxy and Backend Health
@@ -69,7 +69,7 @@ jobs:
           docker compose logs
           exit 1
           
-      - name Stop containers
+      - name: Stop containers
         if: always()
         run: docker-compose down
     
